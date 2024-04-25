@@ -83,7 +83,7 @@ export default function UserStack() {
           tabBarInactiveTintColor: 'gray',
           tabBarStyle: {
             position: 'absolute',
-            bottom: 5,
+            bottom: 8,
             left: 10,
             right: 10,
             borderRadius: 20,
