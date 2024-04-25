@@ -19,13 +19,14 @@ export default function UserStack() {
           tabBarInactiveTintColor: 'gray',
           tabBarStyle: {
             position: 'absolute',
-            bottom: 10,
+            bottom: 5,
             left: 10,
             right: 10,
             borderRadius: 20,
             backgroundColor: '#ffffff',
             height: 60,
-            paddingVertical: 10,
+            paddingBottom: 10,
+            paddingVertical: 8,
           },
           tabBarIcon: ({ color }) => {
             let iconName;
