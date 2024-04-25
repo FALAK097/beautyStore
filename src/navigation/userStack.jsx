@@ -13,6 +13,10 @@ import CategoryDetails from '../screens/Category/CategoryDetails';
 import EditCategory from '../screens/Category/EditCategory';
 import AddCategory from '../screens/Category/AddCategory';
 
+import ProductDetails from '../screens/Products/ProductDetails';
+import EditProduct from '../screens/Products/EditProduct';
+import AddProduct from '../screens/Products/AddProduct';
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -43,6 +47,33 @@ const CategoryStack = () => {
   );
 };
 
+const ProductStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ProductsMain"
+        component={Products}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductDetails"
+        component={ProductDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditProduct"
+        component={EditProduct}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 export default function UserStack() {
   return (
     <NavigationContainer>
@@ -66,7 +97,7 @@ export default function UserStack() {
 
             if (route.name === 'Home') {
               iconName = 'home-outline';
-            } else if (route.name === 'Category') {
+            } else if (route.name === 'Categories') {
               iconName = 'list-outline';
             } else if (route.name === 'Products') {
               iconName = 'cart-outline';
@@ -83,13 +114,13 @@ export default function UserStack() {
           options={{ headerShown: false }}
         />
         <Tab.Screen
-          name="Category"
+          name="Categories"
           component={CategoryStack}
           options={{ headerShown: false }}
         />
         <Tab.Screen
           name="Products"
-          component={Products}
+          component={ProductStack}
           options={{ headerShown: false }}
         />
         <Tab.Screen

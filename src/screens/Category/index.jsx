@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import { Image, Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
-import { categories } from '../../utils/data';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { categories } from '../../utils/data';
 
 const Category = () => {
   const navigation = useNavigation();
