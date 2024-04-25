@@ -1,14 +1,47 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 
 import Home from '../screens/Home';
-import Category from '../screens/Category';
 import Products from '../screens/Products';
 import Dashboard from '../screens/Dashboard';
+import Category from '../screens/Category';
+
+import CategoryDetails from '../screens/Category/CategoryDetails';
+import EditCategory from '../screens/Category/EditCategory';
+import AddCategory from '../screens/Category/AddCategory';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const CategoryStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="CategoryMain"
+        component={Category}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CategoryDetails"
+        component={CategoryDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditCategory"
+        component={EditCategory}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddCategory"
+        component={AddCategory}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 export default function UserStack() {
   return (
@@ -51,7 +84,7 @@ export default function UserStack() {
         />
         <Tab.Screen
           name="Category"
-          component={Category}
+          component={CategoryStack}
           options={{ headerShown: false }}
         />
         <Tab.Screen

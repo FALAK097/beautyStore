@@ -70,7 +70,7 @@ const SignUp = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Sign Up</Text>
+      <Text style={styles.heading}>SignUp</Text>
       <Text style={styles.subheading}>Create an Account</Text>
 
       {!!value.error && (
@@ -133,7 +133,8 @@ const SignUp = ({ navigation }) => {
           />
 
           <Button
-            title="Sign up"
+            title="SignUp"
+            titleStyle={styles.buttonText}
             buttonStyle={styles.button}
             onPress={signUp}
           />
@@ -179,6 +180,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 20,
     borderWidth: 1,
+    borderColor: 'white',
+    backgroundColor: 'tomato',
   },
 
   error: {

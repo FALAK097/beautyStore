@@ -34,7 +34,7 @@ const SignIn = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Sign In</Text>
+      <Text style={styles.heading}>SignIn</Text>
       <Text style={styles.subheading}>Welcome Back!</Text>
 
       {!!value.error && (
@@ -64,11 +64,16 @@ const SignIn = ({ navigation }) => {
           leftIcon={<Icon name="key" size={16} />}
         />
 
-        <Button title="Sign in" buttonStyle={styles.button} onPress={signIn} />
+        <Button
+          title="SignIn"
+          buttonStyle={styles.button}
+          titleStyle={styles.buttonText}
+          onPress={signIn}
+        />
         <Text
           onPress={() => navigation.navigate('SignUp')}
           style={styles.control}>
-          Don't have an account? Sign up
+          Don't have an account? SignUp
         </Text>
       </View>
     </View>
@@ -107,6 +112,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 20,
     borderWidth: 1,
+    backgroundColor: 'white',
+    borderColor: 'tomato',
+  },
+
+  buttonText: {
+    color: 'tomato',
+    fontWeight: 'bold',
   },
 
   error: {

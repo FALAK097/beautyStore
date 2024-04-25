@@ -6,7 +6,7 @@ import { useAuth } from '../utils/hooks/useAuth';
 import { signOut } from 'firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSlider from '../components/ImageSlider';
-import { categories, images, products } from '../utils/data';
+import { category, images, products } from '../utils/data';
 import ConfirmationModal from '../components/ConfirmationModal';
 import CategoriesCard from '../components/CategoriesCard';
 import ProductsCard from '../components/ProductsCard';
@@ -43,7 +43,7 @@ const Home = () => {
       <ImageSlider images={images} />
       <CategoriesCard
         title="Categories"
-        categories={categories}
+        categories={category}
         onViewAllPress={() => navigation.navigate('Category')}
       />
       <ProductsCard
