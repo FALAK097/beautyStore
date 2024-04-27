@@ -7,22 +7,37 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
-const ProductItem = ({ title, price, image }) => (
-  <TouchableOpacity style={styles.productItem}>
-    <Image source={image} style={styles.productImage} />
-    <View style={styles.productDetails}>
-      <Text style={styles.productTitle}>{title}</Text>
-      <Text style={styles.productPrice}>Price: {price}</Text>
-    </View>
-  </TouchableOpacity>
-);
+const ProductItem = ({ title, price, image }) => {
+  const { colors } = useTheme();
+
+  return (
+    <TouchableOpacity
+      style={[
+        styles.productItem,
+        { backgroundColor: colors.background, borderColor: colors.text },
+      ]}>
+      <Image source={image} style={styles.productImage} />
+      <View style={styles.productDetails}>
+        <Text style={[styles.productTitle, { color: colors.text }]}>
+          {title}
+        </Text>
+        <Text style={styles.productPrice}>Price: {price}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const ProductsCard = ({ title, products, onViewAllPress }) => {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.productHeading}>{title}</Text>
+        <Text style={[styles.productHeading, { color: colors.text }]}>
+          {title}
+        </Text>
         <TouchableOpacity onPress={onViewAllPress}>
           <Text style={styles.viewAll}>View All</Text>
         </TouchableOpacity>
@@ -62,11 +77,9 @@ const styles = StyleSheet.create({
     color: 'tomato',
   },
   productItem: {
-    backgroundColor: '#fff',
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
     marginRight: 10,
     width: 300,
     height: 200,

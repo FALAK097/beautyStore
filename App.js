@@ -1,9 +1,9 @@
 import 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ThemeProvider } from '@rneui/themed';
 
 import './src/config/Firebase';
 import RootNavigation from './src/navigation';
+import { ThemeProvider } from './src/context/ThemeContext';
 
 const App = () => {
   return (

@@ -1,8 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Modal } from 'react-native';
 import { Button } from '@rneui/themed';
+import { useTheme } from '../context/ThemeContext';
 
 const ConfirmationModal = ({ visible, message, onConfirm, onCancel }) => {
+  const { colors } = useTheme();
+
   return (
     <Modal
       animationType="slide"
@@ -10,8 +13,11 @@ const ConfirmationModal = ({ visible, message, onConfirm, onCancel }) => {
       visible={visible}
       onRequestClose={onCancel}>
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>{message}</Text>
+        <View
+          style={[styles.modalView, { backgroundColor: colors.background }]}>
+          <Text style={[styles.modalText, { color: colors.text }]}>
+            {message}
+          </Text>
           <Button
             type="outline"
             onPress={onConfirm}
@@ -41,7 +47,6 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',

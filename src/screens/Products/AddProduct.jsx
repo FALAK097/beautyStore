@@ -10,8 +10,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProductForm from '../../components/ProductForm';
+import { useTheme } from '../../context/ThemeContext';
+import { useNavigation } from '@react-navigation/native';
 
 const AddProduct = () => {
+  const navigation = useNavigation();
+  const { colors } = useTheme();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [weight, setWeight] = useState('');
@@ -38,17 +42,20 @@ const AddProduct = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons
             name="arrow-back"
             size={24}
-            color="black"
+            color={colors.text}
             style={styles.backIcon}
           />
         </TouchableOpacity>
-        <Text style={styles.heading}>Add Product</Text>
+        <Text style={[styles.heading, { color: colors.text }]}>
+          Add Product
+        </Text>
       </View>
       <KeyboardAvoidingView behavior="padding" style={styles.form}>
         <ScrollView showsVerticalScrollIndicator={false}>

@@ -10,20 +10,23 @@ import { Button, Image } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { products } from '../../utils/data';
+import { useTheme } from '../../context/ThemeContext';
 
 const Products = () => {
   const navigation = useNavigation();
+  const { colors } = useTheme();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.heading}>Products</Text>
+        <Text style={[styles.heading, { color: colors.text }]}>Products</Text>
         <Button
           type="outline"
           onPress={() => navigation.navigate('AddProduct')}
-          buttonStyle={styles.addButton}
+          buttonStyle={[styles.addButton, { borderColor: colors.primary }]}
           title="ADD PRODUCT"
-          titleStyle={styles.addButtonLabel}
+          titleStyle={[styles.addButtonLabel, { color: colors.primary }]}
         />
       </View>
       <ScrollView
@@ -35,14 +38,22 @@ const Products = () => {
             onPress={() =>
               navigation.navigate('ProductDetails', { product: product })
             }>
-            <View style={styles.productCard}>
+            <View style={[styles.productCard, { borderColor: colors.text }]}>
               <Image source={product.image} style={styles.productImage} />
               <View style={styles.productInfo}>
-                <Text style={styles.productTitle}>{product.title}</Text>
-                <Text style={styles.productDescription}>
+                <Text style={[styles.productTitle, { color: colors.text }]}>
+                  {product.title}
+                </Text>
+                <Text
+                  style={[
+                    styles.productDescription,
+                    { color: colors.secondary },
+                  ]}>
                   {product.description}
                 </Text>
-                <Text style={styles.productDetail}>Price: {product.price}</Text>
+                <Text style={[styles.productDetail, { color: colors.text }]}>
+                  Price: {product.price}
+                </Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -55,7 +66,6 @@ const Products = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 20,
   },
   header: {
@@ -69,15 +79,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   addButton: {
-    backgroundColor: 'tomato',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'tomato',
   },
   addButtonLabel: {
-    color: 'white',
     fontWeight: 'bold',
   },
   productsContainer: {
@@ -87,6 +94,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
   },
   productImage: {
     width: 80,
@@ -103,11 +113,9 @@ const styles = StyleSheet.create({
   },
   productDescription: {
     fontSize: 14,
-    color: '#666',
   },
   productDetail: {
     fontSize: 12,
-    color: '#999',
     marginBottom: 5,
   },
 });

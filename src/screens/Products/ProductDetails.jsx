@@ -5,10 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import { useTheme } from '../../context/ThemeContext';
 
 const ProductDetails = ({ route }) => {
   const { product } = route.params;
   const navigation = useNavigation();
+  const { colors } = useTheme();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   // Function to handle delete confirmation
@@ -17,30 +19,47 @@ const ProductDetails = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons
             name="arrow-back"
             size={24}
-            color="black"
+            color={colors.text}
             style={styles.backIcon}
           />
         </TouchableOpacity>
-        <Text style={styles.heading}>Product Details</Text>
+        <Text style={[styles.heading, { color: colors.text }]}>
+          Product Details
+        </Text>
       </View>
       <Image source={product.image} style={styles.productImage} />
       <View style={styles.productInfo}>
-        <Text style={styles.productTitle}>{product.title}</Text>
-        <Text style={styles.productDescription}>{product.description}</Text>
-        <Text style={styles.productDetail}>Quantity: {product.quantity}</Text>
-        <Text style={styles.productDetail}>Weight: {product.weight}</Text>
-        <Text style={styles.productDetail}>
+        <Text style={[styles.productTitle, { color: colors.text }]}>
+          {product.title}
+        </Text>
+        <Text style={[styles.productDescription, { color: colors.secondary }]}>
+          {product.description}
+        </Text>
+        <Text style={[styles.productDetail, { color: colors.text }]}>
+          Quantity: {product.quantity}
+        </Text>
+        <Text style={[styles.productDetail, { color: colors.text }]}>
+          Weight: {product.weight}
+        </Text>
+        <Text style={[styles.productDetail, { color: colors.text }]}>
           Dimensions: {product.dimensions}
         </Text>
-        <Text style={styles.productDetail}>SKU: {product.SKU}</Text>
-        <Text style={styles.productDetail}>Price: {product.price}</Text>
-        <Text style={styles.productDetail}>Category: {product.category}</Text>
+        <Text style={[styles.productDetail, { color: colors.text }]}>
+          SKU: {product.SKU}
+        </Text>
+        <Text style={[styles.productDetail, { color: colors.text }]}>
+          Price: {product.price}
+        </Text>
+        <Text style={[styles.productDetail, { color: colors.text }]}>
+          Category: {product.category}
+        </Text>
       </View>
       <View style={styles.actions}>
         <Button

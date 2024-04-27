@@ -10,20 +10,23 @@ import { Image, Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { categories } from '../../utils/data';
+import { useTheme } from '../../context/ThemeContext';
 
 const Category = () => {
   const navigation = useNavigation();
+  const { colors } = useTheme();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.heading}>Categories</Text>
+        <Text style={[styles.heading, { color: colors.text }]}>Categories</Text>
         <Button
           type="outline"
           onPress={() => navigation.navigate('AddCategory')}
-          buttonStyle={styles.addButton}
+          buttonStyle={[styles.addButton, { borderColor: colors.primary }]}
           title="ADD CATEGORY"
-          titleStyle={styles.addButtonLabel}
+          titleStyle={[styles.addButtonLabel, { color: colors.primary }]}
         />
       </View>
       <ScrollView
@@ -35,11 +38,17 @@ const Category = () => {
             onPress={() =>
               navigation.navigate('CategoryDetails', { category: category })
             }>
-            <View style={styles.categoryCard}>
+            <View style={[styles.categoryCard, { borderColor: colors.text }]}>
               <Image source={category.image} style={styles.categoryImage} />
               <View style={styles.categoryInfo}>
-                <Text style={styles.categoryTitle}>{category.title}</Text>
-                <Text style={styles.categoryDescription}>
+                <Text style={[styles.categoryTitle, { color: colors.text }]}>
+                  {category.title}
+                </Text>
+                <Text
+                  style={[
+                    styles.categoryDescription,
+                    { color: colors.secondary },
+                  ]}>
                   {category.description}
                 </Text>
               </View>
@@ -54,7 +63,6 @@ const Category = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 20,
   },
   header: {
@@ -68,26 +76,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   addButton: {
-    backgroundColor: 'tomato',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'tomato',
   },
   addButtonLabel: {
-    // color: 'tomato',
-    color: 'white',
     fontWeight: 'bold',
   },
   categoriesContainer: {
-    flexGrow: 1,
     paddingBottom: 20,
   },
   categoryCard: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 40,
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
   },
   categoryImage: {
     width: 80,
@@ -104,7 +109,6 @@ const styles = StyleSheet.create({
   },
   categoryDescription: {
     fontSize: 14,
-    color: '#666',
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../utils/hooks/useAuth';
@@ -10,11 +10,14 @@ import { categories, images, products } from '../utils/data';
 import ConfirmationModal from '../components/ConfirmationModal';
 import CategoriesCard from '../components/CategoriesCard';
 import ProductsCard from '../components/ProductsCard';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
 
 const Home = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+  const { toggleTheme, colors } = useTheme();
 
   const emailPrefix = user ? user.email.split('@')[0].toUpperCase() : '';
 
@@ -26,18 +29,30 @@ const Home = () => {
     signOut(user.auth);
   };
 
+  const toggleThemeHandler = () => {
+    toggleTheme();
+  };
+
+  const themeIcon = colors.background === '#F0F0F0' ? 'sunny' : 'moon';
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>
+        <Text style={[styles.welcomeText, { color: colors.text }]}>
           Welcome, {user ? user.displayName.toUpperCase() : emailPrefix}
         </Text>
+        <TouchableOpacity
+          onPress={toggleThemeHandler}
+          style={styles.themeToggle}>
+          <Ionicons name={themeIcon} size={24} color={colors.text} />
+        </TouchableOpacity>
         <Button
           type="outline"
           onPress={handleLogout}
-          buttonStyle={styles.logoutButton}
+          buttonStyle={[styles.logoutButton, { borderColor: colors.primary }]}
           title="Log Out"
-          titleStyle={styles.logoutText}
+          titleStyle={[styles.logoutText, { color: colors.primary }]}
         />
       </View>
       <ImageSlider images={images} />
@@ -64,7 +79,6 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     padding: 20,
   },
   header: {
@@ -76,17 +90,19 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   logoutButton: {
-    borderColor: '#FF4500',
     borderWidth: 1,
     borderRadius: 10,
+    paddingHorizontal: 10,
   },
   logoutText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FF4500',
+  },
+  themeToggle: {
+    padding: 5,
+    borderRadius: 50,
   },
 });
 

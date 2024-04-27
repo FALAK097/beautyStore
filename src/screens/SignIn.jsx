@@ -1,12 +1,16 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Input, Button } from '@rneui/themed';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useTheme } from '../context/ThemeContext';
 
 const auth = getAuth();
 
 const SignIn = ({ navigation }) => {
+  const { colors } = useTheme();
   const [value, setValue] = useState({
     email: '',
     password: '',
@@ -33,35 +37,57 @@ const SignIn = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>SignIn</Text>
-      <Text style={styles.subheading}>Welcome Back!</Text>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons
+            name="arrow-back"
+            size={24}
+            color={colors.text}
+            style={styles.backIcon}
+          />
+        </TouchableOpacity>
+      </View>
+      <Text style={[styles.heading, { color: colors.primary }]}>SignIn</Text>
+      <Text style={[styles.subheading, { color: colors.secondary }]}>
+        Welcome Back
+      </Text>
 
       {!!value.error && (
-        <View style={styles.error}>
-          <Text>{value.error}</Text>
+        <View
+          style={[
+            styles.error,
+            {
+              backgroundColor: colors.secondary,
+              borderColor: colors.background,
+            },
+          ]}>
+          <Text style={colors.text}>{value.error}</Text>
         </View>
       )}
 
       <View style={styles.controls}>
         <Input
           placeholder="Email"
+          inputStyle={{ color: colors.text }}
           containerStyle={styles.control}
           value={value.email}
           onChangeText={(text) => setValue({ ...value, email: text })}
           keyboardType="email-address"
           autoCapitalize="none"
-          leftIcon={<Icon name="envelope" size={16} />}
+          leftIcon={<Icon name="envelope" color={'grey'} size={16} />}
         />
 
         <Input
           placeholder="Password"
+          inputStyle={{ color: colors.text }}
           containerStyle={styles.control}
           value={value.password}
           onChangeText={(text) => setValue({ ...value, password: text })}
           secureTextEntry={true}
           autoCapitalize="none"
-          leftIcon={<Icon name="key" size={16} />}
+          leftIcon={<Icon name="key" color={'grey'} size={16} />}
         />
 
         <Button
@@ -72,21 +98,31 @@ const SignIn = ({ navigation }) => {
         />
         <Text
           onPress={() => navigation.navigate('SignUp')}
-          style={styles.control}>
+          style={[styles.control, { color: colors.text }]}>
           Don't have an account? SignUp
         </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 70,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+    alignSelf: 'flex-start',
+  },
+  backIcon: {
+    marginRight: 20,
+    marginLeft: 20,
+    marginBottom: 20,
   },
 
   heading: {
@@ -124,8 +160,8 @@ const styles = StyleSheet.create({
   error: {
     marginTop: 10,
     padding: 10,
-    color: '#fff',
-    backgroundColor: '#D54826FF',
+    borderWidth: 1,
+    borderRadius: 20,
   },
 });
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { Button } from '@rneui/themed';
 import ImagePickerComponent from './ImagePickerComponent';
+import { useTheme } from '../context/ThemeContext';
 
 const CategoryForm = ({
   title,
@@ -9,24 +10,30 @@ const CategoryForm = ({
   setTitle,
   setDescription,
   onSubmit,
+  isEditing,
 }) => {
+  const { colors } = useTheme();
+  const buttonTitle = isEditing ? 'Update Category' : 'Add Category';
+
   return (
     <View>
       <TextInput
         style={styles.input}
         placeholder="Title"
+        placeholderTextColor={colors.text}
         value={title}
         onChangeText={setTitle}
       />
       <TextInput
         style={styles.input}
         placeholder="Description"
+        placeholderTextColor={colors.text}
         value={description}
         onChangeText={setDescription}
       />
       <ImagePickerComponent />
       <Button
-        title="Add Category"
+        title={buttonTitle}
         onPress={onSubmit}
         buttonStyle={styles.addButton}
         titleStyle={styles.addButtonLabel}

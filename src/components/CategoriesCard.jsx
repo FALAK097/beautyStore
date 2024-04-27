@@ -6,18 +6,28 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
-const CategoryItem = ({ title }) => (
-  <TouchableOpacity style={styles.categoryItem}>
-    <Text style={styles.categoryTitle}>{title}</Text>
-  </TouchableOpacity>
-);
+const CategoryItem = ({ title }) => {
+  const { colors } = useTheme();
+  return (
+    <TouchableOpacity
+      style={[styles.categoryItem, { borderColor: colors.text }]}>
+      <Text style={[styles.categoryTitle, { color: colors.text }]}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
+};
 
 const CategoriesCard = ({ title, categories, onViewAllPress }) => {
+  const { colors } = useTheme();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.categoryHeading}>{title}</Text>
+        <Text style={[styles.categoryHeading, { color: colors.text }]}>
+          {title}
+        </Text>
         <TouchableOpacity onPress={onViewAllPress}>
           <Text style={styles.viewAll}>View All</Text>
         </TouchableOpacity>
@@ -52,11 +62,9 @@ const styles = StyleSheet.create({
     color: 'tomato',
   },
   categoryItem: {
-    backgroundColor: '#fff',
     padding: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#333',
     marginRight: 10,
   },
   categoryTitle: {

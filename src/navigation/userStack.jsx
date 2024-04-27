@@ -16,6 +16,7 @@ import AddCategory from '../screens/Category/AddCategory';
 import ProductDetails from '../screens/Products/ProductDetails';
 import EditProduct from '../screens/Products/EditProduct';
 import AddProduct from '../screens/Products/AddProduct';
+import { useTheme } from '../context/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -75,19 +76,22 @@ const ProductStack = () => {
 };
 
 export default function UserStack() {
+  const { colors } = useTheme();
+
   return (
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.text,
           tabBarStyle: {
             position: 'absolute',
             bottom: 8,
             left: 10,
             right: 10,
             borderRadius: 20,
-            backgroundColor: '#ffffff',
+            backgroundColor: colors.background,
+            borderColor: colors.text,
             height: 60,
             paddingBottom: 10,
             paddingVertical: 8,
