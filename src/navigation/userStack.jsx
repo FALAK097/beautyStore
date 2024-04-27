@@ -17,6 +17,12 @@ import ProductDetails from '../screens/Products/ProductDetails';
 import EditProduct from '../screens/Products/EditProduct';
 import AddProduct from '../screens/Products/AddProduct';
 import { useTheme } from '../context/ThemeContext';
+import Charts, {
+  CategoryChart,
+  InventoryChart,
+  ProductChart,
+  UserChart,
+} from '../components/Charts';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -69,6 +75,38 @@ const ProductStack = () => {
       <Stack.Screen
         name="AddProduct"
         component={AddProduct}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const DashboardStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="DashboardMain"
+        component={Dashboard}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CategoryChart"
+        component={Charts}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductChart"
+        component={Charts}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UserChart"
+        component={Charts}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="InventoryChart"
+        component={Charts}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -129,7 +167,7 @@ export default function UserStack() {
         />
         <Tab.Screen
           name="Dashboard"
-          component={Dashboard}
+          component={DashboardStack}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>
