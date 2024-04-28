@@ -16,13 +16,8 @@ import AddCategory from '../screens/Category/AddCategory';
 import ProductDetails from '../screens/Products/ProductDetails';
 import EditProduct from '../screens/Products/EditProduct';
 import AddProduct from '../screens/Products/AddProduct';
+import Charts from '../components/Charts';
 import { useTheme } from '../context/ThemeContext';
-import Charts, {
-  CategoryChart,
-  InventoryChart,
-  ProductChart,
-  UserChart,
-} from '../components/Charts';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

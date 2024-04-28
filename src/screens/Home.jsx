@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../utils/hooks/useAuth';
 import { signOut } from 'firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSlider from '../components/ImageSlider';
-import { categories, images, products } from '../utils/data';
 import ConfirmationModal from '../components/ConfirmationModal';
 import CategoriesCard from '../components/CategoriesCard';
 import ProductsCard from '../components/ProductsCard';
 import { Ionicons } from '@expo/vector-icons';
+import { images } from '../utils/data';
 import { useTheme } from '../context/ThemeContext';
 
 const Home = () => {
@@ -18,8 +18,38 @@ const Home = () => {
   const navigation = useNavigation();
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const { toggleTheme, colors } = useTheme();
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const emailPrefix = user ? user.email.split('@')[0].toUpperCase() : '';
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('http://192.168.1.105:3000/categories');
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://192.168.1.105:3000/products');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   const handleLogout = () => {
     setLogoutModalVisible(true);

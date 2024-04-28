@@ -1,22 +1,40 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CategoryForm from '../../components/CategoryForm';
 import { useTheme } from '../../context/ThemeContext';
+import axios from 'axios';
 
 const AddCategory = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log('Title:', title);
-    console.log('Description:', description);
-    // Add more logic to submit the form data
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        'http://192.168.1.105:3000/categories',
+        {
+          title,
+          description,
+          imageUrl,
+        }
+      );
+      const newCategory = response.data;
+      Alert.alert('Success', 'Category added successfully');
+      navigation.navigate('CategoryMain', { shouldRefresh: true });
+    } catch (error) {
+      console.error('Error adding category:', error);
+      Alert.alert('Error', 'Failed to add category');
+    }
+  };
+
+  const handleImageUploadSuccess = (imageUrl) => {
+    setImageUrl(imageUrl);
   };
 
   return (
@@ -42,6 +60,9 @@ const AddCategory = () => {
           setTitle={setTitle}
           setDescription={setDescription}
           onSubmit={handleSubmit}
+          imageUrl={imageUrl}
+          setImageUrl={setImageUrl}
+          onImageUploadSuccess={handleImageUploadSuccess}
         />
       </View>
     </SafeAreaView>

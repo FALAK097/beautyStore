@@ -13,15 +13,10 @@ const ProductForm = ({
   setPrice,
   quantity,
   setQuantity,
-  dimensions,
-  setDimensions,
   weight,
   setWeight,
-  SKU,
-  setSKU,
-  category,
-  setCategory,
-  setImage,
+  imageUrl,
+  setImageUrl,
   handleAddProduct,
   isEditing,
 }) => {
@@ -64,14 +59,6 @@ const ProductForm = ({
       <View style={styles.horizontalContainer}>
         <TextInput
           style={[styles.input, styles.halfInput]}
-          placeholder="Dimensions"
-          placeholderTextColor={colors.text}
-          keyboardType="numeric"
-          value={dimensions}
-          onChangeText={setDimensions}
-        />
-        <TextInput
-          style={[styles.input, styles.halfInput]}
           placeholder="Weight"
           placeholderTextColor={colors.text}
           keyboardType="numeric"
@@ -79,23 +66,7 @@ const ProductForm = ({
           onChangeText={setWeight}
         />
       </View>
-      <View style={styles.horizontalContainer}>
-        <TextInput
-          style={[styles.input, styles.halfInput]}
-          placeholder="SKU"
-          placeholderTextColor={colors.text}
-          value={SKU}
-          onChangeText={setSKU}
-        />
-        <TextInput
-          style={[styles.input, styles.halfInput]}
-          placeholder="Category"
-          placeholderTextColor={colors.text}
-          value={category}
-          onChangeText={setCategory}
-        />
-      </View>
-      <ImagePickerComponent setImage={setImage} />
+      <ImagePickerComponent imageUrl={imageUrl} setImageUrl={setImageUrl} />
       <Button
         title={buttonTitle}
         onPress={handleAddProduct}

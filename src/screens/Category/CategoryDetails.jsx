@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
   },
   categoryDescription: {
     fontSize: 14,
+    color: '#666',
   },
   actions: {
     position: 'absolute',

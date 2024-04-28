@@ -1,20 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { Image, Button } from '@rneui/themed';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { categories } from '../../utils/data';
 import { useTheme } from '../../context/ThemeContext';
 
 const Category = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const { colors } = useTheme();
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [route.params?.shouldRefresh]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('http://192.168.1.105:3000/categories');
+      const data = await response.json();
+      setCategories(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (route.params?.newCategory) {
+      setCategories((prevCategories) => [
+        ...prevCategories,
+        route.params.newCategory,
+      ]);
+    }
+  }, [route.params?.newCategory]);
 
   return (
     <SafeAreaView
@@ -29,33 +57,40 @@ const Category = () => {
           titleStyle={[styles.addButtonLabel, { color: colors.primary }]}
         />
       </View>
-      <ScrollView
-        contentContainerStyle={styles.categoriesContainer}
-        showsVerticalScrollIndicator={false}>
-        {categories.map((category) => (
-          <TouchableOpacity
-            key={category.id}
-            onPress={() =>
-              navigation.navigate('CategoryDetails', { category: category })
-            }>
-            <View style={[styles.categoryCard, { borderColor: colors.text }]}>
-              <Image source={category.image} style={styles.categoryImage} />
-              <View style={styles.categoryInfo}>
-                <Text style={[styles.categoryTitle, { color: colors.text }]}>
-                  {category.title}
-                </Text>
-                <Text
-                  style={[
-                    styles.categoryDescription,
-                    { color: colors.secondary },
-                  ]}>
-                  {category.description}
-                </Text>
+      {loading ? (
+        <ActivityIndicator size="large" color={colors.primary} />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.categoriesContainer}
+          showsVerticalScrollIndicator={false}>
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category.id}
+              onPress={() =>
+                navigation.navigate('CategoryDetails', { category })
+              }>
+              <View style={[styles.categoryCard, { borderColor: colors.text }]}>
+                <Image
+                  source={{ uri: category.imageUrl }}
+                  style={styles.categoryImage}
+                />
+                <View style={styles.categoryInfo}>
+                  <Text style={[styles.categoryTitle, { color: colors.text }]}>
+                    {category.title}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.categoryDescription,
+                      { color: colors.secondary },
+                    ]}>
+                    {category.description}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

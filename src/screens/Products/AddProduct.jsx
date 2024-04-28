@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,29 +17,47 @@ import { useNavigation } from '@react-navigation/native';
 const AddProduct = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [weight, setWeight] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [dimensions, setDimensions] = useState('');
-  const [SKU, setSKU] = useState('');
-  const [category, setCategory] = useState('');
-  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
 
-  const handleAddProduct = () => {
-    // Handle adding the product with the provided data
-    console.log('Product added:', {
-      title,
-      description,
-      weight,
-      price,
-      quantity,
-      dimensions,
-      SKU,
-      category,
-      image,
-    });
+  const handleAddProduct = async () => {
+    try {
+      const newProduct = {
+        title,
+        description,
+        weight,
+        price,
+        quantity,
+        imageUrl,
+      };
+
+      const response = await fetch('http://192.168.1.105:3000/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      if (response.ok) {
+        Alert.alert('Product added successfully:', newProduct);
+
+        navigation.goBack();
+      } else {
+        console.error('Failed to add product');
+      }
+    } catch (error) {
+      console.error('Error adding product:', error);
+    }
+  };
+
+  const handleImageUploadSuccess = (imageUrl) => {
+    setImageUrl(imageUrl);
   };
 
   return (
@@ -70,14 +89,10 @@ const AddProduct = () => {
             setPrice={setPrice}
             quantity={quantity}
             setQuantity={setQuantity}
-            dimensions={dimensions}
-            setDimensions={setDimensions}
-            SKU={SKU}
-            setSKU={setSKU}
-            category={category}
-            setCategory={setCategory}
             handleAddProduct={handleAddProduct}
-            setImage={setImage}
+            imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
+            onImageUploadSuccess={handleImageUploadSuccess}
           />
         </ScrollView>
       </KeyboardAvoidingView>
