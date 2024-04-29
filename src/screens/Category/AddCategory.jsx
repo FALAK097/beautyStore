@@ -19,7 +19,7 @@ const AddCategory = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        'http://192.168.1.105:3000/categories',
+        'http://192.168.59.237:3000/categories',
         {
           title,
           description,

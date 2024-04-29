@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   Text,
@@ -6,7 +5,6 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +14,6 @@ import { Button } from '@rneui/themed';
 
 const ImagePickerComponent = ({ imageUrl, setImageUrl }) => {
   const [permission, requestPermission] = ImagePicker.useCameraPermissions();
-  // const [image, setImage] = useState(null);
 
   const takePhoto = async () => {
     try {
@@ -33,14 +30,13 @@ const ImagePickerComponent = ({ imageUrl, setImageUrl }) => {
           console.log(v)
         );
         console.log(resp);
-        setImageUrl(resp); // Set the image URL
+        setImageUrl(resp);
       }
     } catch (e) {
       Alert.alert('Error Uploading Image ' + e.message);
     }
   };
 
-  // permission check
   if (permission?.status !== ImagePicker.PermissionStatus.GRANTED) {
     return (
       <View style={styles.container}>

@@ -1,27 +1,40 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button, Image } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { useTheme } from '../../context/ThemeContext';
-import { useAuth } from '../../utils/hooks/useAuth';
+import axios from 'axios';
 
 const CategoryDetails = ({ route }) => {
   const { category } = route.params;
   const navigation = useNavigation();
   const { colors } = useTheme();
-  const { user } = useAuth();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
-  // Function to handle deletion
-  const handleDelete = () => {
-    setDeleteModalVisible(false);
-  };
+  const handleDeleteConfirmation = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.59.237:3000/categories/${category.id}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
-  // Check if the user is the owner of the category
-  // const isOwner = user?.uid === category.creatorUid;
+      if (response.ok) {
+        setDeleteModalVisible(false);
+        Alert.alert('Success', 'Category deleted successfully');
+        navigation.navigate('CategoryMain', { shouldRefresh: true });
+      } else {
+        throw new Error('Failed to delete category');
+      }
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      Alert.alert('Error', 'Failed to delete category');
+    }
+  };
 
   return (
     <SafeAreaView
@@ -48,7 +61,6 @@ const CategoryDetails = ({ route }) => {
           {category.description}
         </Text>
       </View>
-      {/* {isOwner && ( */}
       <View style={styles.actions}>
         <Button
           type="outline"
@@ -67,11 +79,10 @@ const CategoryDetails = ({ route }) => {
           onPress={() => setDeleteModalVisible(true)}
         />
       </View>
-      {/* )} */}
       <ConfirmationModal
         visible={deleteModalVisible}
         message="Are you sure you want to delete this category?"
-        onConfirm={handleDelete}
+        onConfirm={handleDeleteConfirmation}
         onCancel={() => setDeleteModalVisible(false)}
       />
     </SafeAreaView>

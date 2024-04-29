@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../utils/hooks/useAuth';
@@ -12,6 +18,7 @@ import ProductsCard from '../components/ProductsCard';
 import { Ionicons } from '@expo/vector-icons';
 import { images } from '../utils/data';
 import { useTheme } from '../context/ThemeContext';
+import { StatusBar } from 'expo-status-bar';
 
 const Home = () => {
   const { user } = useAuth();
@@ -20,12 +27,13 @@ const Home = () => {
   const { toggleTheme, colors } = useTheme();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const emailPrefix = user ? user.email.split('@')[0].toUpperCase() : '';
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://192.168.1.105:3000/categories');
+      const response = await fetch('http://192.168.59.237:3000/categories');
       const data = await response.json();
       setCategories(data);
     } catch (error) {
@@ -35,7 +43,7 @@ const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://192.168.1.105:3000/products');
+      const response = await fetch('http://192.168.59.237:3000/products');
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -65,9 +73,20 @@ const Home = () => {
 
   const themeIcon = colors.background === '#F0F0F0' ? 'sunny' : 'moon';
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchCategories();
+    fetchProducts();
+    setTimeout(() => setRefreshing(false), 1000);
+  };
+
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}>
+      style={[styles.container, { backgroundColor: colors.background }]}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
+      <StatusBar style="auto" />
       <View style={styles.header}>
         <Text style={[styles.welcomeText, { color: colors.text }]}>
           Welcome, {user ? user.displayName.toUpperCase() : emailPrefix}

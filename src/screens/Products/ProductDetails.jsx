@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from 'react-native';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { useTheme } from '../../context/ThemeContext';
+import axios from 'axios';
 
 const ProductDetails = ({ route }) => {
   const { product } = route.params;
@@ -14,8 +22,22 @@ const ProductDetails = ({ route }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   // Function to handle delete confirmation
-  const handleDeleteConfirmation = () => {
-    setDeleteModalVisible(false);
+  const handleDeleteConfirmation = async () => {
+    try {
+      const response = await axios.delete(
+        `http://192.168.59.237:3000/products/${product.id}`
+      );
+      if (response.status === 200) {
+        setDeleteModalVisible(false);
+        Alert.alert('Success', 'Product deleted successfully');
+        navigation.navigate('ProductsMain', { shouldRefresh: true });
+      } else {
+        throw new Error('Failed to delete product');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      Alert.alert('Error', 'Failed to delete product');
+    }
   };
 
   return (

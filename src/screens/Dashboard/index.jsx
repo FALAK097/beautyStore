@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 
 const Dashboard = () => {
   const { colors } = useTheme();
@@ -16,6 +17,7 @@ const Dashboard = () => {
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar style="auto" />
       <View style={styles.header}>
         <Ionicons name="speedometer" size={32} color={colors.text} />
         <Text style={[styles.headerText, { color: colors.text }]}>
