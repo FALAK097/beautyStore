@@ -6,17 +6,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../utils/hooks/useAuth';
 
 const CategoryDetails = ({ route }) => {
   const { category } = route.params;
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const { user } = useAuth();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   // Function to handle deletion
   const handleDelete = () => {
     setDeleteModalVisible(false);
   };
+
+  // Check if the user is the owner of the category
+  // const isOwner = user?.uid === category.creatorUid;
 
   return (
     <SafeAreaView
@@ -34,7 +39,7 @@ const CategoryDetails = ({ route }) => {
           Category Details
         </Text>
       </View>
-      <Image source={category.image} style={styles.categoryImage} />
+      <Image source={{ uri: category.imageUrl }} style={styles.categoryImage} />
       <View style={styles.categoryInfo}>
         <Text style={[styles.categoryTitle, { color: colors.text }]}>
           {category.title}
@@ -43,6 +48,7 @@ const CategoryDetails = ({ route }) => {
           {category.description}
         </Text>
       </View>
+      {/* {isOwner && ( */}
       <View style={styles.actions}>
         <Button
           type="outline"
@@ -61,6 +67,7 @@ const CategoryDetails = ({ route }) => {
           onPress={() => setDeleteModalVisible(true)}
         />
       </View>
+      {/* )} */}
       <ConfirmationModal
         visible={deleteModalVisible}
         message="Are you sure you want to delete this category?"

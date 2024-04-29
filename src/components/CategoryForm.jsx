@@ -20,16 +20,16 @@ const CategoryForm = ({
   return (
     <View>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: colors.text }]}
         placeholder="Title"
-        placeholderTextColor={colors.text}
+        placeholderTextColor={'grey'}
         value={title}
         onChangeText={setTitle}
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: colors.text }]}
         placeholder="Description"
-        placeholderTextColor={colors.text}
+        placeholderTextColor={'grey'}
         value={description}
         onChangeText={setDescription}
       />

@@ -67,7 +67,7 @@ const Category = () => {
             <TouchableOpacity
               key={category.id}
               onPress={() =>
-                navigation.navigate('CategoryDetails', { category })
+                navigation.navigate('CategoryDetails', { category: category })
               }>
               <View style={[styles.categoryCard, { borderColor: colors.text }]}>
                 <Image

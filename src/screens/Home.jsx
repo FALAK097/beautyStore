@@ -23,10 +23,6 @@ const Home = () => {
 
   const emailPrefix = user ? user.email.split('@')[0].toUpperCase() : '';
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   const fetchCategories = async () => {
     try {
       const response = await fetch('http://192.168.1.105:3000/categories');
@@ -37,10 +33,6 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
   const fetchProducts = async () => {
     try {
       const response = await fetch('http://192.168.1.105:3000/products');
@@ -50,6 +42,14 @@ const Home = () => {
       console.error('Error fetching products:', error);
     }
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handleLogout = () => {
     setLogoutModalVisible(true);

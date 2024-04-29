@@ -6,12 +6,10 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
 
 const CategoryItem = ({ title }) => {
   const { colors } = useTheme();
-  const navigation = useNavigation();
 
   return (
     <TouchableOpacity

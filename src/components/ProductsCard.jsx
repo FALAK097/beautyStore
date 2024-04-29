@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 
-const ProductItem = ({ title, price, image }) => {
+const ProductItem = ({ title, price, imageUrl }) => {
   const { colors } = useTheme();
 
   return (
@@ -18,12 +18,12 @@ const ProductItem = ({ title, price, image }) => {
         styles.productItem,
         { backgroundColor: colors.background, borderColor: colors.text },
       ]}>
-      <Image source={image} style={styles.productImage} />
+      <Image source={{ uri: imageUrl }} style={styles.productImage} />
       <View style={styles.productDetails}>
         <Text style={[styles.productTitle, { color: colors.text }]}>
           {title}
         </Text>
-        <Text style={styles.productPrice}>Price: {price}</Text>
+        <Text style={styles.productPrice}>Price: ${price}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -50,7 +50,7 @@ const ProductsCard = ({ title, products, onViewAllPress }) => {
           <ProductItem
             title={item.title}
             price={item.price}
-            image={item.image}
+            imageUrl={item.imageUrl}
           />
         )}
       />

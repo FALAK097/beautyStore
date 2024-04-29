@@ -35,5 +35,14 @@ export default {
         process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
     },
+    plugins: [
+      [
+        'expo-image-picker',
+        {
+          photosPermission: 'Allow Beauty Store to access your photos',
+          cameraPermission: 'Allow Beauty Store to access your camera',
+        },
+      ],
+    ],
   },
 };

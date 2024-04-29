@@ -34,7 +34,7 @@ const ProductDetails = ({ route }) => {
           Product Details
         </Text>
       </View>
-      <Image source={product.image} style={styles.productImage} />
+      <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
       <View style={styles.productInfo}>
         <Text style={[styles.productTitle, { color: colors.text }]}>
           {product.title}
@@ -43,22 +43,13 @@ const ProductDetails = ({ route }) => {
           {product.description}
         </Text>
         <Text style={[styles.productDetail, { color: colors.text }]}>
-          Quantity: {product.quantity}
+          Quantity: {product.quantity} units
         </Text>
         <Text style={[styles.productDetail, { color: colors.text }]}>
-          Weight: {product.weight}
-        </Text>
-        <Text style={[styles.productDetail, { color: colors.text }]}>
-          Dimensions: {product.dimensions}
-        </Text>
-        <Text style={[styles.productDetail, { color: colors.text }]}>
-          SKU: {product.SKU}
+          Weight: {product.weight} kg
         </Text>
         <Text style={[styles.productDetail, { color: colors.text }]}>
           Price: {product.price}
-        </Text>
-        <Text style={[styles.productDetail, { color: colors.text }]}>
-          Category: {product.category}
         </Text>
       </View>
       <View style={styles.actions}>

@@ -1,20 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { Button, Image } from '@rneui/themed';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { products } from '../../utils/data';
+// import { products } from '../../utils/data';
 import { useTheme } from '../../context/ThemeContext';
 
 const Products = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
   const { colors } = useTheme();
+
+  useEffect(() => {
+    fetchProducts();
+  }, [route.params?.shouldRefresh]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://192.168.1.105:3000/products');
+      const data = await response.json();
+      setProducts(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (route.params?.newProduct) {
+      setProducts((prevProducts) => [...prevProducts, route.params.newProduct]);
+    }
+  }, [route.params?.newProduct]);
 
   return (
     <SafeAreaView
@@ -29,36 +55,43 @@ const Products = () => {
           titleStyle={[styles.addButtonLabel, { color: colors.primary }]}
         />
       </View>
-      <ScrollView
-        contentContainerStyle={styles.productsContainer}
-        showsVerticalScrollIndicator={false}>
-        {products.map((product) => (
-          <TouchableOpacity
-            key={product.id}
-            onPress={() =>
-              navigation.navigate('ProductDetails', { product: product })
-            }>
-            <View style={[styles.productCard, { borderColor: colors.text }]}>
-              <Image source={product.image} style={styles.productImage} />
-              <View style={styles.productInfo}>
-                <Text style={[styles.productTitle, { color: colors.text }]}>
-                  {product.title}
-                </Text>
-                <Text
-                  style={[
-                    styles.productDescription,
-                    { color: colors.secondary },
-                  ]}>
-                  {product.description}
-                </Text>
-                <Text style={[styles.productDetail, { color: colors.text }]}>
-                  Price: {product.price}
-                </Text>
+      {loading ? (
+        <ActivityIndicator size="large" color={colors.primary} />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.productsContainer}
+          showsVerticalScrollIndicator={false}>
+          {products.map((product) => (
+            <TouchableOpacity
+              key={product.id}
+              onPress={() =>
+                navigation.navigate('ProductDetails', { product: product })
+              }>
+              <View style={[styles.productCard, { borderColor: colors.text }]}>
+                <Image
+                  source={{ uri: product.imageUrl }}
+                  style={styles.productImage}
+                />
+                <View style={styles.productInfo}>
+                  <Text style={[styles.productTitle, { color: colors.text }]}>
+                    {product.title}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.productDescription,
+                      { color: colors.secondary },
+                    ]}>
+                    {product.description}
+                  </Text>
+                  <Text style={[styles.productDetail, { color: colors.text }]}>
+                    Price: ${product.price}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

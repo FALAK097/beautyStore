@@ -17,7 +17,7 @@ const ProductForm = ({
   setWeight,
   imageUrl,
   setImageUrl,
-  handleAddProduct,
+  onSubmit,
   isEditing,
 }) => {
   const { colors } = useTheme();
@@ -25,14 +25,14 @@ const ProductForm = ({
   return (
     <View>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: colors.text }]}
         placeholder="Title"
         placeholderTextColor={colors.text}
         value={title}
         onChangeText={setTitle}
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: colors.text }]}
         placeholder="Description"
         placeholderTextColor={colors.text}
         value={description}
@@ -40,7 +40,7 @@ const ProductForm = ({
       />
       <View style={styles.horizontalContainer}>
         <TextInput
-          style={[styles.input, styles.halfInput]}
+          style={[styles.input, styles.halfInput, { color: colors.text }]}
           placeholder="Price"
           placeholderTextColor={colors.text}
           keyboardType="numeric"
@@ -48,7 +48,7 @@ const ProductForm = ({
           onChangeText={setPrice}
         />
         <TextInput
-          style={[styles.input, styles.halfInput]}
+          style={[styles.input, styles.halfInput, { color: colors.text }]}
           placeholder="Quantity"
           placeholderTextColor={colors.text}
           keyboardType="numeric"
@@ -58,7 +58,7 @@ const ProductForm = ({
       </View>
       <View style={styles.horizontalContainer}>
         <TextInput
-          style={[styles.input, styles.halfInput]}
+          style={[styles.input, styles.halfInput, { color: colors.text }]}
           placeholder="Weight"
           placeholderTextColor={colors.text}
           keyboardType="numeric"
@@ -69,7 +69,7 @@ const ProductForm = ({
       <ImagePickerComponent imageUrl={imageUrl} setImageUrl={setImageUrl} />
       <Button
         title={buttonTitle}
-        onPress={handleAddProduct}
+        onPress={onSubmit}
         buttonStyle={styles.addButton}
         titleStyle={styles.addButtonLabel}
       />

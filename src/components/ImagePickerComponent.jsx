@@ -1,93 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import {
   Text,
   Image,
   View,
   StyleSheet,
   TouchableOpacity,
+  FlatList,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { uploadToFirebase } from '../config/Firebase.js';
+import { Button } from '@rneui/themed';
 
 const ImagePickerComponent = ({ imageUrl, setImageUrl }) => {
-  const [image, setImage] = useState(null);
-  const [error, setError] = useState(null);
+  const [permission, requestPermission] = ImagePicker.useCameraPermissions();
+  // const [image, setImage] = useState(null);
 
-  const getImageMimeType = (fileName) => {
-    const extension = fileName.split('.').pop().toLowerCase();
-    switch (extension) {
-      case 'jpg':
-      case 'jpeg':
-        return 'image/jpeg';
-      case 'png':
-        return 'image/png';
-      case 'gif':
-        return 'image/gif';
-      default:
-        return 'image/jpeg';
-    }
-  };
-
-  const uploadImage = async (result) => {
+  const takePhoto = async () => {
     try {
-      const uri = result.assets[0].uri;
-      const fileName = uri.split('/').pop();
-      const type = getImageMimeType(fileName);
-      const formData = new FormData();
-      formData.append('image', {
-        uri,
-        name: fileName,
-        type: type || 'image/jpeg',
+      const cameraResp = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        quality: 1,
       });
 
-      const response = await fetch('http://192.168.1.105:3000/uploads', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
+      if (!cameraResp.canceled) {
+        const { uri } = cameraResp.assets[0];
+        const fileName = uri.split('/').pop();
+        const resp = await uploadToFirebase(uri, fileName, (v) =>
+          console.log(v)
+        );
+        console.log(resp);
+        setImageUrl(resp); // Set the image URL
       }
-
-      const responseData = await response.json();
-      // console.log('Image uploaded successfully:', responseData.imageUrl);
-      setImageUrl(responseData.imageUrl);
-    } catch (error) {
-      setError(error.message);
-      // console.error('Error uploading image:', error);
-      Alert.alert('Error', error.message);
+    } catch (e) {
+      Alert.alert('Error Uploading Image ' + e.message);
     }
   };
 
-  const handleImagePicker = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    // console.log('Image Picker Result:', result);
-
-    if (!result.canceled) {
-      setImage(result.uri);
-      uploadImage(result);
-    }
-  };
+  // permission check
+  if (permission?.status !== ImagePicker.PermissionStatus.GRANTED) {
+    return (
+      <View style={styles.container}>
+        <Text>Permission Not Granted - {permission?.status}</Text>
+        <StatusBar style="auto" />
+        <Button title="Request Permission" onPress={requestPermission}></Button>
+      </View>
+    );
+  }
 
   const handleRemoveImage = () => {
     setImage(null);
-    setImageUrl(null);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.imagePickerContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleImagePicker}>
+        <StatusBar style="auto" />
+        <Button title="Take Picture" onPress={takePhoto}></Button>
+        {/* <TouchableOpacity style={styles.button} onPress={handleImagePicker}>
           <Ionicons name="image" size={24} color="black" />
           <Text style={styles.buttonText}>Select Image</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={takePhoto}>
+          <Ionicons name="camera" size={24} color="black" />
+          <Text style={styles.buttonText}>Take Photo</Text>
+        </TouchableOpacity> */}
         {imageUrl && (
           <View style={styles.imageContainer}>
             <Image

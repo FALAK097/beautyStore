@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +11,7 @@ import axios from 'axios';
 const AddCategory = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -31,10 +33,6 @@ const AddCategory = () => {
       console.error('Error adding category:', error);
       Alert.alert('Error', 'Failed to add category');
     }
-  };
-
-  const handleImageUploadSuccess = (imageUrl) => {
-    setImageUrl(imageUrl);
   };
 
   return (
@@ -62,7 +60,6 @@ const AddCategory = () => {
           onSubmit={handleSubmit}
           imageUrl={imageUrl}
           setImageUrl={setImageUrl}
-          onImageUploadSuccess={handleImageUploadSuccess}
         />
       </View>
     </SafeAreaView>

@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ProductForm from '../../components/ProductForm';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -25,39 +26,23 @@ const AddProduct = () => {
   const [quantity, setQuantity] = useState('');
   const [imageUrl, setImageUrl] = useState('');
 
-  const handleAddProduct = async () => {
+  const handleSubmit = async () => {
     try {
-      const newProduct = {
+      const response = await axios.post('http://192.168.1.105:3000/products', {
         title,
         description,
         weight,
         price,
         quantity,
         imageUrl,
-      };
-
-      const response = await fetch('http://192.168.1.105:3000/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newProduct),
       });
-
-      if (response.ok) {
-        Alert.alert('Product added successfully:', newProduct);
-
-        navigation.goBack();
-      } else {
-        console.error('Failed to add product');
-      }
+      const newProduct = response.data;
+      Alert.alert('Success', 'Product added successfully');
+      navigation.navigate('ProductsMain', { shouldRefresh: true });
     } catch (error) {
       console.error('Error adding product:', error);
+      Alert.alert('Error', 'Failed to add product');
     }
-  };
-
-  const handleImageUploadSuccess = (imageUrl) => {
-    setImageUrl(imageUrl);
   };
 
   return (
@@ -89,10 +74,9 @@ const AddProduct = () => {
             setPrice={setPrice}
             quantity={quantity}
             setQuantity={setQuantity}
-            handleAddProduct={handleAddProduct}
+            onSubmit={handleSubmit}
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
-            onImageUploadSuccess={handleImageUploadSuccess}
           />
         </ScrollView>
       </KeyboardAvoidingView>
