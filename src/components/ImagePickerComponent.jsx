@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   Text,
@@ -5,6 +6,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -14,9 +16,11 @@ import { Button } from '@rneui/themed';
 
 const ImagePickerComponent = ({ imageUrl, setImageUrl }) => {
   const [permission, requestPermission] = ImagePicker.useCameraPermissions();
+  const [loading, setLoading] = useState(false);
 
   const takePhoto = async () => {
     try {
+      setLoading(true);
       const cameraResp = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -34,36 +38,67 @@ const ImagePickerComponent = ({ imageUrl, setImageUrl }) => {
       }
     } catch (e) {
       Alert.alert('Error Uploading Image ' + e.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (permission?.status !== ImagePicker.PermissionStatus.GRANTED) {
-    return (
-      <View style={styles.container}>
-        <Text>Permission Not Granted - {permission?.status}</Text>
-        <StatusBar style="auto" />
-        <Button title="Request Permission" onPress={requestPermission}></Button>
-      </View>
-    );
-  }
+  const pickImageFromGallery = async () => {
+    try {
+      setLoading(true);
+      const galleryResp = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        quality: 1,
+      });
+
+      if (!galleryResp.canceled) {
+        const { uri } = galleryResp.assets[0];
+        const fileName = uri.split('/').pop();
+        const resp = await uploadToFirebase(uri, fileName, (v) =>
+          console.log(v)
+        );
+        console.log(resp);
+        setImageUrl(resp);
+      }
+    } catch (e) {
+      Alert.alert('Error Uploading Image ' + e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleRemoveImage = () => {
-    setImage(null);
+    setImageUrl(null);
   };
 
   return (
     <View style={styles.container}>
+      {loading && <ActivityIndicator size="large" color="tomato" />}
+
+      {permission?.status !== ImagePicker.PermissionStatus.GRANTED && (
+        <View style={styles.permissionContainer}>
+          <Text>Permission Not Granted - {permission?.status}</Text>
+          <StatusBar style="auto" />
+          <Button
+            title="Request Permission"
+            onPress={requestPermission}></Button>
+        </View>
+      )}
       <View style={styles.imagePickerContainer}>
         <StatusBar style="auto" />
-        <Button title="Take Picture" onPress={takePhoto}></Button>
-        {/* <TouchableOpacity style={styles.button} onPress={handleImagePicker}>
-          <Ionicons name="image" size={24} color="black" />
-          <Text style={styles.buttonText}>Select Image</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={takePhoto}>
-          <Ionicons name="camera" size={24} color="black" />
-          <Text style={styles.buttonText}>Take Photo</Text>
-        </TouchableOpacity> */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={takePhoto}>
+            <Ionicons name="camera" size={24} color="black" />
+            <Text style={styles.buttonText}>Click Photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={pickImageFromGallery}>
+            <Ionicons name="image" size={24} color="black" />
+            <Text style={styles.buttonText}>Open Gallery</Text>
+          </TouchableOpacity>
+        </View>
         {imageUrl && (
           <View style={styles.imageContainer}>
             <Image
@@ -91,6 +126,16 @@ const styles = StyleSheet.create({
   imagePickerContainer: {
     flexDirection: 'column',
     alignItems: 'center',
+  },
+  permissionContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
   },
   button: {
     flexDirection: 'row',
