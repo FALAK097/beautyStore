@@ -41,7 +41,7 @@ const ProductForm = ({
       <View style={styles.horizontalContainer}>
         <TextInput
           style={[styles.input, styles.halfInput, { color: colors.text }]}
-          placeholder="Price"
+          placeholder="Price (USD)"
           placeholderTextColor={colors.text}
           keyboardType="numeric"
           value={price}
@@ -49,7 +49,7 @@ const ProductForm = ({
         />
         <TextInput
           style={[styles.input, styles.halfInput, { color: colors.text }]}
-          placeholder="Quantity"
+          placeholder="Quantity(Units)"
           placeholderTextColor={colors.text}
           keyboardType="numeric"
           value={quantity}
@@ -59,7 +59,7 @@ const ProductForm = ({
       <View style={styles.horizontalContainer}>
         <TextInput
           style={[styles.input, styles.halfInput, { color: colors.text }]}
-          placeholder="Weight"
+          placeholder="Weight(Kg)"
           placeholderTextColor={colors.text}
           keyboardType="numeric"
           value={weight}

@@ -16,7 +16,9 @@ import AddCategory from '../screens/Category/AddCategory';
 import ProductDetails from '../screens/Products/ProductDetails';
 import EditProduct from '../screens/Products/EditProduct';
 import AddProduct from '../screens/Products/AddProduct';
+
 import Charts from '../components/Charts';
+
 import { useTheme } from '../context/ThemeContext';
 
 const Tab = createBottomTabNavigator();
@@ -85,22 +87,7 @@ const DashboardStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="CategoryChart"
-        component={Charts}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ProductChart"
-        component={Charts}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="UserChart"
-        component={Charts}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="InventoryChart"
+        name="Charts"
         component={Charts}
         options={{ headerShown: false }}
       />
