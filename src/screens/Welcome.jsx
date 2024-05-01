@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, ImageBackground, View } from 'react-native';
 import { Button } from '@rneui/themed';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
 const Welcome = ({ navigation }) => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar style="auto" />
       <ImageBackground
         source={require('../../assets/img1.png')}
@@ -30,7 +29,7 @@ const Welcome = ({ navigation }) => {
           </View>
         </View>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 
