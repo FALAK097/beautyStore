@@ -19,6 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { images } from '../utils/data';
 import { useTheme } from '../context/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
+import Toast from 'react-native-toast-message';
 
 const Home = () => {
   const { user } = useAuth();
@@ -31,9 +32,17 @@ const Home = () => {
 
   const emailPrefix = user ? user.email.split('@')[0].toUpperCase() : '';
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchCategories();
+      fetchProducts();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://192.168.59.237:3000/categories');
+      const response = await fetch('http://192.168.1.103:3000/categories');
       const data = await response.json();
       setCategories(data);
     } catch (error) {
@@ -43,7 +52,7 @@ const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://192.168.59.237:3000/products');
+      const response = await fetch('http://192.168.1.103:3000/products');
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -65,6 +74,15 @@ const Home = () => {
 
   const confirmLogout = () => {
     signOut(user.auth);
+    Toast.show({
+      type: 'success',
+      position: 'top',
+      text1: 'Success',
+      text2: 'Logged out successfully',
+      visibilityTime: 4000,
+      autoHide: true,
+      swipeable: true,
+    });
   };
 
   const toggleThemeHandler = () => {

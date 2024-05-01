@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CategoryForm from '../../components/CategoryForm';
 import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const AddCategory = () => {
   const navigation = useNavigation();
@@ -19,7 +19,7 @@ const AddCategory = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        'http://192.168.59.237:3000/categories',
+        'http://192.168.1.103:3000/categories',
         {
           title,
           description,
@@ -27,11 +27,27 @@ const AddCategory = () => {
         }
       );
       const newCategory = response.data;
-      Alert.alert('Success', 'Category added successfully');
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Success',
+        text2: 'Category added successfully',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
       navigation.navigate('CategoryMain', { shouldRefresh: true });
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Failed to add category',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
       console.error('Error adding category:', error);
-      Alert.alert('Error', 'Failed to add category');
     }
   };
 
@@ -60,6 +76,7 @@ const AddCategory = () => {
           onSubmit={handleSubmit}
           imageUrl={imageUrl}
           setImageUrl={setImageUrl}
+          isEditing={false}
         />
       </View>
     </SafeAreaView>

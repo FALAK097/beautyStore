@@ -19,6 +19,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useTheme } from '../context/ThemeContext';
 import { db } from '../config/Firebase';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 const auth = getAuth();
 
@@ -70,10 +71,25 @@ const SignUp = ({ navigation }) => {
         email: value.email,
         phone: value.phone,
       });
+
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Success',
+        text2: 'Account created successfully.',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
     } catch (error) {
-      setValue({
-        ...value,
-        error: error.message,
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: error.message,
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
       });
     }
   }
@@ -95,19 +111,6 @@ const SignUp = ({ navigation }) => {
       <Text style={[styles.subheading, { color: colors.secondary }]}>
         Create an Account
       </Text>
-
-      {!!value.error && (
-        <View
-          style={[
-            styles.error,
-            {
-              backgroundColor: colors.secondary,
-              borderColor: colors.background,
-            },
-          ]}>
-          <Text style={colors.text}>{value.error}</Text>
-        </View>
-      )}
 
       <KeyboardAvoidingView behavior="padding">
         <ScrollView

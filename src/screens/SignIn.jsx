@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Input, Button } from '@rneui/themed';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useTheme } from '../context/ThemeContext';
+import Toast from 'react-native-toast-message';
 
 const auth = getAuth();
 
@@ -28,10 +29,24 @@ const SignIn = ({ navigation }) => {
 
     try {
       await signInWithEmailAndPassword(auth, value.email, value.password);
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Success',
+        text2: 'Signed in successfully',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
     } catch (error) {
-      setValue({
-        ...value,
-        error: error.message,
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: error.message,
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
       });
     }
   }
@@ -53,19 +68,6 @@ const SignIn = ({ navigation }) => {
       <Text style={[styles.subheading, { color: colors.secondary }]}>
         Welcome Back
       </Text>
-
-      {!!value.error && (
-        <View
-          style={[
-            styles.error,
-            {
-              backgroundColor: colors.secondary,
-              borderColor: colors.background,
-            },
-          ]}>
-          <Text style={colors.text}>{value.error}</Text>
-        </View>
-      )}
 
       <View style={styles.controls}>
         <Input

@@ -12,6 +12,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
 const Products = () => {
   const navigation = useNavigation();
@@ -26,7 +27,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://192.168.59.237:3000/products');
+      const response = await fetch('http://192.168.1.103:3000/products');
       const data = await response.json();
       setProducts(data);
       setLoading(false);
@@ -35,6 +36,13 @@ const Products = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (route.params?.shouldRefresh) {
+      fetchProducts();
+      navigation.setParams({ shouldRefresh: false });
+    }
+  }, [route.params?.shouldRefresh]);
 
   useEffect(() => {
     if (route.params?.newProduct) {
@@ -57,7 +65,7 @@ const Products = () => {
         />
       </View>
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
+        <LoadingIndicator message="Fetching Products..." />
       ) : (
         <ScrollView
           contentContainerStyle={styles.productsContainer}

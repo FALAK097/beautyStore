@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +13,7 @@ import ProductForm from '../../components/ProductForm';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -28,7 +28,7 @@ const AddProduct = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.59.237:3000/products', {
+      const response = await axios.post('http://192.168.1.103:3000/products', {
         title,
         description,
         weight,
@@ -37,11 +37,27 @@ const AddProduct = () => {
         imageUrl,
       });
       const newProduct = response.data;
-      Alert.alert('Success', 'Product added successfully');
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Success',
+        text2: 'Product added successfully',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
       navigation.navigate('ProductsMain', { shouldRefresh: true });
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Failed to add product',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
       console.error('Error adding product:', error);
-      Alert.alert('Error', 'Failed to add product');
     }
   };
 
@@ -77,6 +93,7 @@ const AddProduct = () => {
             onSubmit={handleSubmit}
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
+            isEditing={false}
           />
         </ScrollView>
       </KeyboardAvoidingView>

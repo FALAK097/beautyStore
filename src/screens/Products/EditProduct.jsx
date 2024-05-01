@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,32 +11,66 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProductForm from '../../components/ProductForm';
 import { useTheme } from '../../context/ThemeContext';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const EditProduct = () => {
   const { colors } = useTheme();
+  const navigation = useNavigation();
+  const route = useRoute();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [weight, setWeight] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [dimensions, setDimensions] = useState('');
-  const [SKU, setSKU] = useState('');
-  const [category, setCategory] = useState('');
   const [image, setImage] = useState(null);
 
-  const handleEditProduct = () => {
-    // Handle editing the product with the provided data
-    console.log('Product edited:', {
-      title,
-      description,
-      weight,
-      price,
-      quantity,
-      dimensions,
-      SKU,
-      category,
-      image,
-    });
+  const { product } = route.params;
+
+  useEffect(() => {
+    if (product) {
+      setTitle(product.title);
+      setDescription(product.description);
+      setWeight(product.weight);
+      setPrice(product.price);
+      setQuantity(product.quantity);
+      setImage(product.imageUrl);
+    }
+  }, [product]);
+
+  const handleEditProduct = async () => {
+    try {
+      await axios.put(`http://192.168.1.103:3000/products/${product.id}`, {
+        title,
+        description,
+        weight,
+        price,
+        quantity,
+        imageUrl: image,
+      });
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Success',
+        text2: 'Product updated successfully',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
+      navigation.navigate('ProductsMain', { shouldRefresh: true });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Failed to update product',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
+      console.error('Error updating product:', error);
+    }
   };
 
   return (
@@ -68,14 +102,9 @@ const EditProduct = () => {
             setPrice={setPrice}
             quantity={quantity}
             setQuantity={setQuantity}
-            dimensions={dimensions}
-            setDimensions={setDimensions}
-            SKU={SKU}
-            setSKU={setSKU}
-            category={category}
-            setCategory={setCategory}
-            handleAddProduct={handleEditProduct}
-            setImage={setImage}
+            onSubmit={handleEditProduct}
+            imageUrl={image}
+            setImageUrl={setImage}
             isEditing
           />
         </ScrollView>

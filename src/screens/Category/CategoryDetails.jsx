@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button, Image } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { useTheme } from '../../context/ThemeContext';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const CategoryDetails = ({ route }) => {
   const { category } = route.params;
@@ -15,23 +17,36 @@ const CategoryDetails = ({ route }) => {
 
   const handleDeleteConfirmation = async () => {
     try {
-      const response = await fetch(
-        `http://192.168.59.237:3000/categories/${category.id}`,
-        {
-          method: 'DELETE',
-        }
+      const response = await axios.delete(
+        `http://192.168.1.103:3000/categories/${category.id}`
       );
 
-      if (response.ok) {
+      if (response.status === 200) {
         setDeleteModalVisible(false);
-        Alert.alert('Success', 'Category deleted successfully');
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Success',
+          text2: 'Category deleted successfully',
+          visibilityTime: 4000,
+          autoHide: true,
+          swipeable: true,
+        });
         navigation.navigate('CategoryMain', { shouldRefresh: true });
       } else {
         throw new Error('Failed to delete category');
       }
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Failed to delete category',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
       console.error('Error deleting category:', error);
-      Alert.alert('Error', 'Failed to delete category');
     }
   };
 
@@ -63,20 +78,20 @@ const CategoryDetails = ({ route }) => {
       <View style={styles.actions}>
         <Button
           type="outline"
-          buttonStyle={styles.editButton}
-          title="Edit"
-          titleStyle={styles.editButtonLabel}
+          buttonStyle={[styles.actionButton, styles.editButton]}
           onPress={() => {
             navigation.navigate('EditCategory', { category });
-          }}
-        />
+          }}>
+          <Ionicons name="create-outline" size={24} color="tomato" />
+          <Text style={styles.actionButtonText}>Edit</Text>
+        </Button>
         <Button
           type="outline"
-          buttonStyle={styles.deleteButton}
-          title="Delete"
-          titleStyle={styles.deleteButtonLabel}
-          onPress={() => setDeleteModalVisible(true)}
-        />
+          buttonStyle={[styles.actionButton, styles.deleteButton]}
+          onPress={() => setDeleteModalVisible(true)}>
+          <Ionicons name="trash-outline" size={24} color="white" />
+          <Text style={styles.actionButtonText}>Delete</Text>
+        </Button>
       </View>
       <ConfirmationModal
         visible={deleteModalVisible}
@@ -124,29 +139,31 @@ const styles = StyleSheet.create({
   },
   actions: {
     position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     bottom: 100,
     left: 20,
     right: 20,
   },
-  editButton: {
+  actionButton: {
+    flex: 1,
     paddingVertical: 12,
     borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editButton: {
+    marginRight: 10,
     borderWidth: 1,
     borderColor: 'tomato',
   },
-  editButtonLabel: {
-    color: 'tomato',
-    fontWeight: 'bold',
-  },
   deleteButton: {
     backgroundColor: 'red',
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginTop: 10,
   },
-  deleteButtonLabel: {
+  actionButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    marginLeft: 5,
   },
 });
 

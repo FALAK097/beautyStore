@@ -18,7 +18,13 @@ export default function RootNavigation() {
   }, [user, authLoading]);
 
   if (loading) {
-    return <LoadingIndicator />;
+    return (
+      <LoadingIndicator
+        message={
+          user === undefined ? 'Checking authentication...' : 'Loading...'
+        }
+      />
+    );
   }
 
   return user ? <UserStack /> : <AuthStack />;

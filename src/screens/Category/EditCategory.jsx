@@ -1,22 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CategoryForm from '../../components/CategoryForm';
 import { useTheme } from '../../context/ThemeContext';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const EditCategory = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const { colors } = useTheme();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log('Title:', title);
-    console.log('Description:', description);
-    // Add more logic to submit the form data
+  const { category } = route.params;
+
+  useEffect(() => {
+    if (category) {
+      setTitle(category.title);
+      setDescription(category.description);
+      setImage(category.imageUrl);
+    }
+  }, [category]);
+
+  const handleEditCategory = async () => {
+    try {
+      await axios.put(`http://192.168.1.103:3000/categories/${category.id}`, {
+        title,
+        description,
+        imageUrl: image,
+      });
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Success',
+        text2: 'Category updated successfully',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
+      navigation.navigate('CategoryMain', { shouldRefresh: true });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Failed to update category',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
+      console.error('Error updating category:', error);
+    }
   };
 
   return (
@@ -41,7 +79,9 @@ const EditCategory = () => {
           description={description}
           setTitle={setTitle}
           setDescription={setDescription}
-          onSubmit={handleSubmit}
+          imageUrl={image}
+          setImageUrl={setImage}
+          onSubmit={handleEditCategory}
           isEditing
         />
       </View>

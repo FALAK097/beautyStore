@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 import './src/config/Firebase';
 import RootNavigation from './src/navigation';
@@ -10,6 +11,7 @@ const App = () => {
     <SafeAreaProvider>
       <ThemeProvider>
         <RootNavigation />
+        <Toast />
       </ThemeProvider>
     </SafeAreaProvider>
   );

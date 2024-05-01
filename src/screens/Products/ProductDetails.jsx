@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Button } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const ProductDetails = ({ route }) => {
   const { product } = route.params;
@@ -21,22 +15,37 @@ const ProductDetails = ({ route }) => {
   const { colors } = useTheme();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
-  // Function to handle delete confirmation
   const handleDeleteConfirmation = async () => {
     try {
       const response = await axios.delete(
-        `http://192.168.59.237:3000/products/${product.id}`
+        `http://192.168.1.103:3000/products/${product.id}`
       );
       if (response.status === 200) {
         setDeleteModalVisible(false);
-        Alert.alert('Success', 'Product deleted successfully');
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Success',
+          text2: 'Product deleted successfully',
+          visibilityTime: 4000,
+          autoHide: true,
+          swipeable: true,
+        });
         navigation.navigate('ProductsMain', { shouldRefresh: true });
       } else {
         throw new Error('Failed to delete product');
       }
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Error',
+        text2: 'Failed to delete product',
+        visibilityTime: 4000,
+        autoHide: true,
+        swipeable: true,
+      });
       console.error('Error deleting product:', error);
-      Alert.alert('Error', 'Failed to delete product');
     }
   };
 
@@ -77,20 +86,20 @@ const ProductDetails = ({ route }) => {
       <View style={styles.actions}>
         <Button
           type="outline"
-          buttonStyle={styles.editButton}
-          title="Edit"
-          titleStyle={styles.editButtonLabel}
+          buttonStyle={[styles.actionButton, styles.editButton]}
           onPress={() => {
             navigation.navigate('EditProduct', { product });
-          }}
-        />
+          }}>
+          <Ionicons name="create-outline" size={24} color="tomato" />
+          <Text style={styles.actionButtonText}>Edit</Text>
+        </Button>
         <Button
           type="outline"
-          buttonStyle={styles.deleteButton}
-          title="Delete"
-          titleStyle={styles.deleteButtonLabel}
-          onPress={() => setDeleteModalVisible(true)}
-        />
+          buttonStyle={[styles.actionButton, styles.deleteButton]}
+          onPress={() => setDeleteModalVisible(true)}>
+          <Ionicons name="trash-outline" size={24} color="white" />
+          <Text style={styles.actionButtonText}>Delete</Text>
+        </Button>
       </View>
       <ConfirmationModal
         visible={deleteModalVisible}
@@ -150,26 +159,28 @@ const styles = StyleSheet.create({
     bottom: 100,
     left: 20,
     right: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  editButton: {
+  actionButton: {
+    flex: 1,
     paddingVertical: 12,
     borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editButton: {
+    marginRight: 10,
     borderWidth: 1,
     borderColor: 'tomato',
   },
-  editButtonLabel: {
-    color: 'tomato',
-    fontWeight: 'bold',
-  },
   deleteButton: {
     backgroundColor: 'red',
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginTop: 10,
   },
-  deleteButtonLabel: {
+  actionButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    marginLeft: 5,
   },
 });
 

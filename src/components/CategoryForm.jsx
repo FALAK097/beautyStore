@@ -33,7 +33,11 @@ const CategoryForm = ({
         value={description}
         onChangeText={setDescription}
       />
-      <ImagePickerComponent imageUrl={imageUrl} setImageUrl={setImageUrl} />
+      <ImagePickerComponent
+        imageUrl={imageUrl}
+        setImageUrl={setImageUrl}
+        isEditing={isEditing}
+      />
       <Button
         title={buttonTitle}
         onPress={onSubmit}

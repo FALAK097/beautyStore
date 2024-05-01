@@ -12,6 +12,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
 const Category = () => {
   const navigation = useNavigation();
@@ -26,7 +27,7 @@ const Category = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://192.168.59.237:3000/categories');
+      const response = await fetch('http://192.168.1.103:3000/categories');
       const data = await response.json();
       setCategories(data);
       setLoading(false);
@@ -35,6 +36,13 @@ const Category = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (route.params?.shouldRefresh) {
+      fetchCategories();
+      navigation.setParams({ shouldRefresh: false });
+    }
+  }, [route.params?.shouldRefresh]);
 
   useEffect(() => {
     if (route.params?.newCategory) {
@@ -60,7 +68,7 @@ const Category = () => {
         />
       </View>
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
+        <LoadingIndicator message={'Fetching Categories...'} />
       ) : (
         <ScrollView
           contentContainerStyle={styles.categoriesContainer}

@@ -1,16 +1,21 @@
 # TODO
 
-1. Icons for edit and delete button
-2. Toast Alerts
-3. Loading Indicator Enhancement
-4. Profile Screen with user info, logout, delete account, reset password, edit user info option
-5. Add images from Camera in forms
-6. Validate the forms with zod and react hook form
-7. Dashboard data display
-8. Display categories from firestore
-9. Edit and delete categories from firestore
-10. Display individual category data from firestore
-11. Add products to firestore after filling form
-12. Display products
-13. Edit and delete products
-14. Display individual products from firestore
+- [ ] Onboarding Screen
+- [ ] Splash screen and logo
+- [ ] Profile Screen with user info, logout, delete account, reset password, edit user info option
+- [ ] Dashboard data display
+- [ ] Validate the forms with zod and react hook form
+- [ ] Only owned user can edit and delete their products and categories
+- [x] Toast Alerts
+- [x] Icons for edit and delete button
+- [x] Loading Indicator Enhancement
+- [x] Edit products from firestore
+- [x] Edit categories from firestore
+- [x] Add images from Camera & Gallery in forms
+- [x] Display categories from firestore
+- [x] Delete categories from firestore
+- [x] Display individual category data from firestore
+- [x] Add products to firestore after filling form
+- [x] Display products
+- [x] Delete products
+- [x] Display individual products from firestore
