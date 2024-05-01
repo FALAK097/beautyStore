@@ -107,7 +107,12 @@ const Home = () => {
       <StatusBar style="auto" />
       <View style={styles.header}>
         <Text style={[styles.welcomeText, { color: colors.text }]}>
-          Welcome, {user ? user.displayName.toUpperCase() : emailPrefix}
+          Welcome,{' '}
+          {user
+            ? user.displayName
+              ? user.displayName.toUpperCase()
+              : emailPrefix
+            : emailPrefix}
         </Text>
         <TouchableOpacity
           onPress={toggleThemeHandler}

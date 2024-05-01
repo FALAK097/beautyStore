@@ -4,8 +4,8 @@
 - [ ] Splash screen and logo
 - [ ] Profile Screen with user info, logout, delete account, reset password, edit user info option
 - [ ] Dashboard data display
-- [ ] Validate the forms with zod and react hook form
 - [ ] Only owned user can edit and delete their products and categories
+- [x] Validate the forms with zod and react hook form
 - [x] Toast Alerts
 - [x] Icons for edit and delete button
 - [x] Loading Indicator Enhancement

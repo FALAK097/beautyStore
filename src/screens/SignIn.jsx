@@ -1,34 +1,46 @@
-import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button } from '@rneui/themed';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useTheme } from '../context/ThemeContext';
 import Toast from 'react-native-toast-message';
 
 const auth = getAuth();
 
+const schema = z.object({
+  email: z.string().email('Please enter a valid email address.'),
+  password: z.string().min(8, 'Password must be minimum 8 characters'),
+});
+
 const SignIn = ({ navigation }) => {
   const { colors } = useTheme();
-  const [value, setValue] = useState({
-    email: '',
-    password: '',
-    error: '',
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    resolver: zodResolver(schema),
   });
 
-  async function signIn() {
-    if (value.email === '' || value.password === '') {
-      setValue({
-        ...value,
-        error: 'Email and password are mandatory.',
-      });
-      return;
-    }
-
+  async function onSubmit(data) {
     try {
-      await signInWithEmailAndPassword(auth, value.email, value.password);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
       Toast.show({
         type: 'success',
         position: 'top',
@@ -69,41 +81,65 @@ const SignIn = ({ navigation }) => {
         Welcome Back
       </Text>
 
-      <View style={styles.controls}>
-        <Input
-          placeholder="Email"
-          inputStyle={{ color: colors.text }}
-          containerStyle={styles.control}
-          value={value.email}
-          onChangeText={(text) => setValue({ ...value, email: text })}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          leftIcon={<Icon name="envelope" color={'grey'} size={16} />}
-        />
-
-        <Input
-          placeholder="Password"
-          inputStyle={{ color: colors.text }}
-          containerStyle={styles.control}
-          value={value.password}
-          onChangeText={(text) => setValue({ ...value, password: text })}
-          secureTextEntry={true}
-          autoCapitalize="none"
-          leftIcon={<Icon name="key" color={'grey'} size={16} />}
-        />
-
-        <Button
-          title="SignIn"
-          buttonStyle={styles.button}
-          titleStyle={styles.buttonText}
-          onPress={signIn}
-        />
-        <Text
-          onPress={() => navigation.navigate('SignUp')}
-          style={[styles.control, { color: colors.text }]}>
-          Don't have an account? SignUp
-        </Text>
-      </View>
+      <KeyboardAvoidingView behavior="padding">
+        <View style={styles.controls}>
+          <Controller
+            name={'email'}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Input
+                  placeholder="Email"
+                  inputStyle={{ color: colors.text }}
+                  containerStyle={styles.control}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  leftIcon={<Icon name="envelope" color={'grey'} size={16} />}
+                />
+                {errors.email && (
+                  <Text style={styles.error}>{errors.email.message}</Text>
+                )}
+              </>
+            )}
+          />
+          <Controller
+            name={'password'}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Input
+                  placeholder="Password"
+                  inputStyle={{ color: colors.text }}
+                  containerStyle={styles.control}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  leftIcon={<Icon name="key" color={'grey'} size={16} />}
+                />
+                {errors.password && (
+                  <Text style={styles.error}>{errors.password.message}</Text>
+                )}
+              </>
+            )}
+          />
+          <Button
+            title="SignIn"
+            buttonStyle={styles.button}
+            titleStyle={styles.buttonText}
+            onPress={handleSubmit(onSubmit)}
+          />
+          <Text
+            onPress={() => navigation.navigate('SignUp')}
+            style={[styles.control, { color: colors.text }]}>
+            Don't have an account? SignUp
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -113,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 70,
+    paddingTop: 80,
   },
   header: {
     flexDirection: 'row',
@@ -160,10 +196,13 @@ const styles = StyleSheet.create({
   },
 
   error: {
-    marginTop: 10,
+    marginTop: 4,
     padding: 10,
+    borderRadius: 10,
     borderWidth: 1,
-    borderRadius: 20,
+    borderColor: 'red',
+    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    color: 'red',
   },
 });
 

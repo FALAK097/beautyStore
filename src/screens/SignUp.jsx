@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -9,6 +9,9 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button } from '@rneui/themed';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -23,53 +26,54 @@ import Toast from 'react-native-toast-message';
 
 const auth = getAuth();
 
+const schema = z.object({
+  username: z
+    .string()
+    .min(3, 'Username must be minimum 3 characters')
+    .max(20, 'Username must be maximum 20 characters'),
+  email: z.string().email('Please enter a valid email address.'),
+  password: z.string().min(8, 'Password must be minimum 8 characters'),
+  confirmPassword: z
+    .string()
+    .min(8, 'Password must be minimum 8 characters')
+    .refine((data) => data.confirmPassword === data.password, {
+      message: 'Passwords do not match',
+    }),
+  phone: z.string().min(10).max(10, 'Phone number must be 10 digits'),
+});
+
 const SignUp = ({ navigation }) => {
   const { colors } = useTheme();
-  const [value, setValue] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone: '',
-    error: '',
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      phone: '',
+    },
+    resolver: zodResolver(schema),
   });
 
-  async function signUp() {
-    if (
-      value.email === '' ||
-      value.password === '' ||
-      value.confirmPassword === '' ||
-      value.phone === ''
-    ) {
-      setValue({
-        ...value,
-        error: 'All fields are mandatory.',
-      });
-      return;
-    }
-
-    if (value.password !== value.confirmPassword) {
-      setValue({
-        ...value,
-        error: 'Passwords do not match.',
-      });
-      return;
-    }
-
+  async function onSubmit(data) {
     try {
       const { user } = await createUserWithEmailAndPassword(
         auth,
-        value.email,
-        value.password
+        data.email,
+        data.password
       );
 
-      await updateProfile(user, { displayName: value.username });
+      await updateProfile(user, { displayName: data.username });
 
       const userRef = doc(db, 'users', user.uid);
       await setDoc(userRef, {
-        username: value.username,
-        email: value.email,
-        phone: value.phone,
+        username: data.username,
+        email: data.email,
+        phone: data.phone,
       });
 
       Toast.show({
@@ -116,70 +120,125 @@ const SignUp = ({ navigation }) => {
         <ScrollView
           style={styles.controls}
           showsVerticalScrollIndicator={false}>
-          <Input
-            placeholder="Username"
-            inputStyle={{ color: colors.text }}
-            placeholderTextColor={'grey'}
-            containerStyle={styles.control}
-            value={value.username}
-            onChangeText={(text) => setValue({ ...value, username: text })}
-            leftIcon={<Icon name="user" color={'grey'} size={16} />}
+          <Controller
+            name={'username'}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Input
+                  placeholder="Username"
+                  inputStyle={{ color: colors.text }}
+                  placeholderTextColor={'grey'}
+                  containerStyle={styles.control}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  leftIcon={<Icon name="user" color={'grey'} size={16} />}
+                />
+                {errors.username && (
+                  <Text style={styles.error}>{errors.username.message}</Text>
+                )}
+              </>
+            )}
           />
-
-          <Input
-            placeholder="Email"
-            inputStyle={{ color: colors.text }}
-            placeholderTextColor={'grey'}
-            containerStyle={styles.control}
-            value={value.email}
-            onChangeText={(text) => setValue({ ...value, email: text })}
-            leftIcon={<Icon name="envelope" color={'grey'} size={16} />}
-            keyboardType="email-address"
-            autoCapitalize="none"
+          <Controller
+            name={'email'}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Input
+                  placeholder="Email"
+                  inputStyle={{ color: colors.text }}
+                  placeholderTextColor={'grey'}
+                  containerStyle={styles.control}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  leftIcon={<Icon name="envelope" color={'grey'} size={16} />}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+                {errors.email && (
+                  <Text style={styles.error}>{errors.email.message}</Text>
+                )}
+              </>
+            )}
           />
-
-          <Input
-            placeholder="Password"
-            inputStyle={{ color: colors.text }}
-            placeholderTextColor={'grey'}
-            containerStyle={styles.control}
-            value={value.password}
-            onChangeText={(text) => setValue({ ...value, password: text })}
-            secureTextEntry={true}
-            autoCapitalize="none"
-            leftIcon={<Icon name="key" color={'grey'} size={16} />}
+          <Controller
+            name={'password'}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Input
+                  placeholder="Password"
+                  inputStyle={{ color: colors.text }}
+                  placeholderTextColor={'grey'}
+                  containerStyle={styles.control}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  leftIcon={<Icon name="key" color={'grey'} size={16} />}
+                />
+                {errors.password && (
+                  <Text style={styles.error}>{errors.password.message}</Text>
+                )}
+              </>
+            )}
           />
-
-          <Input
-            placeholder="Confirm Password"
-            inputStyle={{ color: colors.text }}
-            placeholderTextColor={'grey'}
-            containerStyle={styles.control}
-            value={value.confirmPassword}
-            onChangeText={(text) =>
-              setValue({ ...value, confirmPassword: text })
-            }
-            secureTextEntry={true}
-            autoCapitalize="none"
-            leftIcon={<Icon name="key" color={'grey'} size={16} />}
+          <Controller
+            name={'confirmPassword'}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Input
+                  placeholder="Confirm Password"
+                  inputStyle={{ color: colors.text }}
+                  placeholderTextColor={'grey'}
+                  containerStyle={styles.control}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  leftIcon={<Icon name="key" color={'grey'} size={16} />}
+                />
+                {errors.confirmPassword && (
+                  <Text style={styles.error}>
+                    {errors.confirmPassword.message}
+                  </Text>
+                )}
+              </>
+            )}
           />
-
-          <Input
-            placeholder="Phone"
-            inputStyle={{ color: colors.text }}
-            placeholderTextColor={'grey'}
-            containerStyle={styles.control}
-            value={value.phone}
-            onChangeText={(text) => setValue({ ...value, phone: text })}
-            keyboardType="phone-pad"
-            leftIcon={<Icon name="phone" color={'grey'} size={16} />}
+          <Controller
+            name={'phone'}
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Input
+                  placeholder="Phone"
+                  inputStyle={{ color: colors.text }}
+                  placeholderTextColor={'grey'}
+                  containerStyle={styles.control}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  keyboardType="phone-pad"
+                  leftIcon={<Icon name="phone" color={'grey'} size={16} />}
+                />
+                {errors.phone && (
+                  <Text style={styles.error}>{errors.phone.message}</Text>
+                )}
+              </>
+            )}
           />
-
           <Button
             title="SignUp"
             titleStyle={styles.buttonText}
             buttonStyle={styles.button}
-            onPress={signUp}
+            onPress={handleSubmit(onSubmit)}
           />
           <Text
             onPress={() => navigation.navigate('SignIn')}
@@ -236,10 +295,13 @@ const styles = StyleSheet.create({
   },
 
   error: {
-    marginTop: 10,
+    marginTop: 4,
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
+    borderColor: 'red',
+    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    color: 'red',
   },
 });
 
