@@ -18,6 +18,18 @@ const AddCategory = () => {
 
   const handleSubmit = async () => {
     try {
+      if (!title || !description || !imageUrl) {
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Error',
+          text2: 'All fields are required',
+          visibilityTime: 4000,
+          autoHide: true,
+          swipeable: true,
+        });
+        return;
+      }
       const response = await axios.post(
         'http://192.168.1.103:3000/categories',
         {

@@ -83,7 +83,9 @@ const CategoryDetails = ({ route }) => {
             navigation.navigate('EditCategory', { category });
           }}>
           <Ionicons name="create-outline" size={24} color="tomato" />
-          <Text style={styles.actionButtonText}>Edit</Text>
+          <Text style={[styles.actionButtonText, { color: colors.text }]}>
+            Edit
+          </Text>
         </Button>
         <Button
           type="outline"
