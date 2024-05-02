@@ -1,5 +1,12 @@
 # TODO
 
+- [ ] Add more charts
+- [ ] Profile Screen with delete account, log out, reset password, edit profile info options
+- [ ] Only owner of product & category can edit or delete
+- [ ] Password & Confirm password don't match
+- [ ] Categories dropdown in add/edit products with existing category option
+- [ ] Display the products that belong to the category on categories details page
+- [x] Splash Screen & Icon
 - [x] Dashboard data display
 - [x] Onboarding Screen
 - [x] Validate the forms with zod and react hook form

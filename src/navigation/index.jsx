@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
 
 import { useAuth } from '../utils/hooks/useAuth';
 import AuthStack from './authStack';
 import UserStack from './userStack';
-import LoadingIndicator from '../components/LoadingIndicator';
 
 export default function RootNavigation() {
   const { user, loading: authLoading } = useAuth();
@@ -14,18 +14,32 @@ export default function RootNavigation() {
   }, [authLoading]);
 
   useEffect(() => {
-    setLoading(user === undefined && authLoading);
+    setLoading(user === undefined || authLoading);
   }, [user, authLoading]);
 
   if (loading) {
     return (
-      <LoadingIndicator
-        message={
-          user === undefined ? 'Checking authentication...' : 'Loading...'
-        }
-      />
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="tomato" />
+        <Text style={styles.loadingText}>
+          {user === undefined ? 'Checking authentication...' : 'Loading...'}
+        </Text>
+      </View>
     );
   }
 
   return user ? <UserStack /> : <AuthStack />;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 18,
+    color: 'gray',
+  },
+});
