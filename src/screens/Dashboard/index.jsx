@@ -65,7 +65,6 @@ const Dashboard = () => {
       style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       <View style={styles.header}>
-        <Ionicons name="speedometer" size={32} color={colors.text} />
         <Text style={[styles.heading, { color: colors.text }]}>Dashboard</Text>
         <Button
           type="outline"

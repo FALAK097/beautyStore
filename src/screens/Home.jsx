@@ -1,30 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
-import { Button } from '@rneui/themed';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../utils/hooks/useAuth';
-import { signOut } from 'firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageSlider from '../components/ImageSlider';
-import ConfirmationModal from '../components/ConfirmationModal';
 import CategoriesCard from '../components/CategoriesCard';
 import ProductsCard from '../components/ProductsCard';
 import { Ionicons } from '@expo/vector-icons';
 import { images } from '../utils/data';
 import { useTheme } from '../context/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
-import Toast from 'react-native-toast-message';
 
 const Home = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
-  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const { toggleTheme, colors } = useTheme();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -68,42 +57,15 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  const handleLogout = () => {
-    setLogoutModalVisible(true);
-  };
-
-  const confirmLogout = () => {
-    signOut(user.auth);
-    Toast.show({
-      type: 'success',
-      position: 'top',
-      text1: 'Success',
-      text2: 'Logged out successfully',
-      visibilityTime: 4000,
-      autoHide: true,
-      swipeable: true,
-    });
-  };
-
   const toggleThemeHandler = () => {
     toggleTheme();
   };
 
   const themeIcon = colors.background === '#F0F0F0' ? 'sunny' : 'moon';
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchCategories();
-    fetchProducts();
-    setTimeout(() => setRefreshing(false), 1000);
-  };
-
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+      style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       <View style={styles.header}>
         <Text style={[styles.welcomeText, { color: colors.text }]}>
@@ -119,13 +81,6 @@ const Home = () => {
           style={styles.themeToggle}>
           <Ionicons name={themeIcon} size={24} color={colors.text} />
         </TouchableOpacity>
-        <Button
-          type="outline"
-          onPress={handleLogout}
-          buttonStyle={[styles.logoutButton, { borderColor: colors.primary }]}
-          title="Log Out"
-          titleStyle={[styles.logoutText, { color: colors.primary }]}
-        />
       </View>
       <ImageSlider images={images} />
       <CategoriesCard
@@ -137,12 +92,6 @@ const Home = () => {
         title="Products"
         products={products}
         onViewAllPress={() => navigation.navigate('Products')}
-      />
-      <ConfirmationModal
-        visible={logoutModalVisible}
-        message="Are you sure you want to log out?"
-        onConfirm={confirmLogout}
-        onCancel={() => setLogoutModalVisible(false)}
       />
     </SafeAreaView>
   );
@@ -161,15 +110,6 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 18,
-    fontWeight: 'bold',
-  },
-  logoutButton: {
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-  },
-  logoutText: {
-    fontSize: 16,
     fontWeight: 'bold',
   },
   themeToggle: {

@@ -14,7 +14,7 @@ export default function RootNavigation() {
   }, [authLoading]);
 
   useEffect(() => {
-    setLoading(user === undefined || authLoading);
+    setLoading(user === undefined && authLoading);
   }, [user, authLoading]);
 
   if (loading) {

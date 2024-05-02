@@ -20,6 +20,7 @@ import AddProduct from '../screens/Products/AddProduct';
 import Charts from '../components/Charts';
 
 import { useTheme } from '../context/ThemeContext';
+import Profile from '../screens/Profile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -127,6 +128,8 @@ export default function UserStack() {
               iconName = 'cart-outline';
             } else if (route.name === 'Dashboard') {
               iconName = 'analytics-outline';
+            } else if (route.name === 'Profile') {
+              iconName = 'person-outline';
             }
 
             return <Ionicons name={iconName} size={28} color={color} />;
@@ -150,6 +153,11 @@ export default function UserStack() {
         <Tab.Screen
           name="Dashboard"
           component={DashboardStack}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>
